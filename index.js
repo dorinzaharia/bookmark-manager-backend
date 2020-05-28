@@ -1,12 +1,17 @@
 const express = require("express");
 const https = require("https");
 const url = require("url");
+const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
+app.use(cors());
 
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const SUBSCRIPTION_KEY = process.env.AZURE_SUBSCRIPTION_KEY;
+const HOSTNAME = process.env.HOSTNAME;
+const PATHNAME = process.env.PATHNAME;
+
 if (!SUBSCRIPTION_KEY) {
   throw new Error("Missing the AZURE_SUBSCRIPTION_KEY environment variable");
 }
@@ -15,8 +20,8 @@ app.get("/search", (req, res) => {
   const requestUrl = url.parse(
     url.format({
       protocol: "https",
-      hostname: "api.cognitive.microsoft.com",
-      pathname: "/bing/v7.0/search",
+      hostname: HOSTNAME,
+      pathname: PATHNAME,
       query: {
         q: req.query.q,
         count: req.query.count || 10,
@@ -49,4 +54,4 @@ app.get("/search", (req, res) => {
   );
 });
 
-app.listen(port);
+app.listen(PORT);
