@@ -8,20 +8,24 @@ const app = express();
 app.use(cors());
 
 const PORT = process.env.PORT || 3001;
-const SUBSCRIPTION_KEY = process.env.AZURE_SUBSCRIPTION_KEY;
 const HOSTNAME = process.env.HOSTNAME;
-const PATHNAME = process.env.PATHNAME;
+const WEB_SEARCH_PATHNAME = process.env.WEB_SEARCH_PATHNAME;
+const CUSTOM_SEARCH_PATHNAME = process.env.CUSTOM_SEARCH_PATHNAME;
+const WEB_SEARCH_KEY = process.env.WEB_SEARCH_KEY;
+const CUSTOM_SEARCH_KEY = process.env.CUSTOM_SEARCH_KEY;
 
-if (!SUBSCRIPTION_KEY) {
-  throw new Error("Missing the AZURE_SUBSCRIPTION_KEY environment variable");
-}
+app.get("*", (req, res) => {
+  res.status(500).json({
+    message: "Route does not exist",
+  });
+});
 
 app.get("/search", (req, res) => {
   const requestUrl = url.parse(
     url.format({
       protocol: "https",
       hostname: HOSTNAME,
-      pathname: PATHNAME,
+      pathname: WEB_SEARCH_PATHNAME,
       query: {
         q: req.query.q,
         count: req.query.count || 10,
@@ -34,7 +38,7 @@ app.get("/search", (req, res) => {
     {
       hostname: requestUrl.hostname,
       path: requestUrl.path,
-      headers: { "Ocp-Apim-Subscription-Key": SUBSCRIPTION_KEY },
+      headers: { "Ocp-Apim-Subscription-Key": WEB_SEARCH_KEY },
     },
 
     (response) => {
@@ -54,12 +58,43 @@ app.get("/search", (req, res) => {
   );
 });
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"))
+app.get("/customsearch", (req, res) => {
+  const requestUrl = url.parse(
+    url.format({
+      protocol: "https",
+      hostname: HOSTNAME,
+      pathname: CUSTOM_SEARCH_PATHNAME,
+      query: {
+        q: req.query.q,
+        customconfig: req.query.customconfig,
+        count: req.query.count || 10,
+        offset: req.query.offset || 0,
+        mkt: req.query.mkt || "en-US",
+      },
+    })
+  );
+  https.get(
+    {
+      hostname: requestUrl.hostname,
+      path: requestUrl.path,
+      headers: { "Ocp-Apim-Subscription-Key": CUSTOM_SEARCH_KEY },
+    },
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../client", "build", "index.html"))
-  })
-}
+    (response) => {
+      let body = [];
+      response
+        .on("data", (responseData) => {
+          body += responseData;
+        })
+        .on("end", () => {
+          const data = JSON.parse(body);
+          res.status(200).json(data);
+        })
+        .on("error", (error) => {
+          res.status(500).json({ error });
+        });
+    }
+  );
+});
 
 app.listen(PORT);
