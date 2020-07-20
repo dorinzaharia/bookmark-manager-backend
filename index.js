@@ -2,30 +2,26 @@ const express = require("express");
 const https = require("https");
 const url = require("url");
 const cors = require("cors");
-require("dotenv").config();
+
+const {
+  port,
+  bingHostname,
+  bingWebSearchPathname,
+  bingWebSearchKey,
+  bingCustomSearchPathname,
+  bingCustomSearchKey,
+  bingCustomSearchCustomConfig,
+} = require("./config");
 
 const app = express();
 app.use(cors());
-
-const PORT = process.env.PORT || 3001;
-const HOSTNAME = process.env.HOSTNAME;
-const WEB_SEARCH_PATHNAME = process.env.WEB_SEARCH_PATHNAME;
-const CUSTOM_SEARCH_PATHNAME = process.env.CUSTOM_SEARCH_PATHNAME;
-const WEB_SEARCH_KEY = process.env.WEB_SEARCH_KEY;
-const CUSTOM_SEARCH_KEY = process.env.CUSTOM_SEARCH_KEY;
-
-app.get("*", (req, res) => {
-  res.status(500).json({
-    message: "Route does not exist",
-  });
-});
 
 app.get("/search", (req, res) => {
   const requestUrl = url.parse(
     url.format({
       protocol: "https",
-      hostname: HOSTNAME,
-      pathname: WEB_SEARCH_PATHNAME,
+      hostname: bingHostname,
+      pathname: bingWebSearchPathname,
       query: {
         q: req.query.q,
         count: req.query.count || 10,
@@ -38,7 +34,7 @@ app.get("/search", (req, res) => {
     {
       hostname: requestUrl.hostname,
       path: requestUrl.path,
-      headers: { "Ocp-Apim-Subscription-Key": WEB_SEARCH_KEY },
+      headers: { "Ocp-Apim-Subscription-Key": bingWebSearchKey },
     },
 
     (response) => {
@@ -62,11 +58,11 @@ app.get("/customsearch", (req, res) => {
   const requestUrl = url.parse(
     url.format({
       protocol: "https",
-      hostname: HOSTNAME,
-      pathname: CUSTOM_SEARCH_PATHNAME,
+      hostname: bingHostname,
+      pathname: bingCustomSearchPathname,
       query: {
         q: req.query.q,
-        customconfig: req.query.customconfig,
+        customconfig: req.query.customconfig || bingCustomSearchCustomConfig,
         count: req.query.count || 10,
         offset: req.query.offset || 0,
         mkt: req.query.mkt || "en-US",
@@ -77,7 +73,7 @@ app.get("/customsearch", (req, res) => {
     {
       hostname: requestUrl.hostname,
       path: requestUrl.path,
-      headers: { "Ocp-Apim-Subscription-Key": CUSTOM_SEARCH_KEY },
+      headers: { "Ocp-Apim-Subscription-Key": bingCustomSearchKey },
     },
 
     (response) => {
@@ -97,4 +93,12 @@ app.get("/customsearch", (req, res) => {
   );
 });
 
-app.listen(PORT);
+app.get("*", (req, res) => {
+  res.status(500).json({
+    message: "Route does not exist",
+  });
+});
+
+app.listen(port, () => {
+  console.log(`Server running at port ${port}`);
+});
