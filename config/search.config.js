@@ -1,6 +1,5 @@
 require("dotenv").config();
 
-const port = process.env.PORT || 3001;
 const bingHostname = process.env.BING_HOSTNAME;
 const bingWebSearchPathname = process.env.BING_WEB_SEARCH_PATHNAME;
 const bingWebSearchKey = process.env.BING_WEB_SEARCH_KEY;
@@ -23,7 +22,6 @@ if (!bingHostname) {
 }
 
 module.exports = {
-    port,
     bingHostname,
     bingWebSearchPathname,
     bingWebSearchKey,
