@@ -14,19 +14,18 @@ const BookmarkSchema = new Schema({
         type: String,
         required: [true, "URL field is required"]
     },
-    collection_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'Collection'
-    },
-    created_at: {
-        type: Date,
-        default: Date.now
-    },
     counter: {
-        type: Integer,
+        type: Number,
         default: 0
     },
-
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    collectionId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Collection'
+    }
 });
 
 module.exports = mongoose.model("Bookmark", BookmarkSchema);

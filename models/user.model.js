@@ -10,6 +10,7 @@ const UserSchema = new Schema({
     email: {
         type: String,
         required: [true, "Email field for user is required"],
+        unique: [true, "Email field for user must be unique"]
     },
     password: {
         type: String,
@@ -23,7 +24,7 @@ const UserSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Collection'
     }],
-    categories: [{
+    searchCategories: [{
         type: Schema.Types.ObjectId,
         ref: 'Category'
     }]

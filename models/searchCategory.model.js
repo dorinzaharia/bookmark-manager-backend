@@ -7,7 +7,11 @@ const CategorySchema = new Schema({
         type: String,
         required: [true, "Name field for category is required"]
     },
-    values: [String]
+    values: [String],
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
 });
 
 module.exports = mongoose.model("Category", CategorySchema);
