@@ -12,6 +12,7 @@ const { dbUsername, dbPassword, dbCluster, dbName } = require("./config/database
   // Internal imports | Routes
 const searchRoutes = require("./routes/search.routes");
 const userRoutes = require("./routes/user.routes");
+const bookmarkRoutes = require("./routes/bookmark.routes");
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
   // Middleware | Routes
 app.use("/search", searchRoutes);
 app.use("/users", userRoutes);
+app.use("/bookmarks", bookmarkRoutes);
 
 // Database connection
 const uri = `mongodb+srv://${dbUsername}:${dbPassword}@${
