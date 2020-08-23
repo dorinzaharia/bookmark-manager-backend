@@ -31,6 +31,10 @@ const UserSchema = new Schema({
     searchCategories: [{
         type: Schema.Types.ObjectId,
         ref: 'Category'
+    }],
+    tags: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Tag'
     }]
 });
 

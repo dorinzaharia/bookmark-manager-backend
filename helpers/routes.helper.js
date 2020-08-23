@@ -29,5 +29,8 @@ module.exports = {
             name: Joi.string().min(3).max(30).required(),
             values: Joi.array().items(Joi.string())
         }),
+        tagSchema: Joi.object().keys({
+            name: Joi.string().min(3).max(30).required(),
+        })
     }
 };

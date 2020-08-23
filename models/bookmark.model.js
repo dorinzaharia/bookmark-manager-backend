@@ -25,7 +25,11 @@ const BookmarkSchema = new Schema({
     collectionId: {
         type: Schema.Types.ObjectId,
         ref: 'Collection'
-    }
+    },
+    tags: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Tag'
+    }]
 });
 
 module.exports = mongoose.model("Bookmark", BookmarkSchema);

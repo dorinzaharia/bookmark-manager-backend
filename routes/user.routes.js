@@ -3,7 +3,6 @@ const router = require("express").Router();
 
 // Internal imports
 const userController = require("../controllers/user.controller");
-const { validateParam, schema } = require("../helpers/routes.helper")
 
 router.route("/")
     .get(userController.indexUsers)
@@ -25,6 +24,10 @@ router.route("/:id/collections")
 router.route("/:id/searchCategories")
     .get(userController.indexUserSearchCategories)
     .post(userController.createNewUserSearchCategory)
+
+router.route("/:id/tags")
+    .get(userController.indexUserTags)
+    .post(userController.createNewUserTag)
 
 
 module.exports = router;
