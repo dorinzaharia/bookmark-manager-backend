@@ -1,9 +1,8 @@
 // Internal imports
-const User = require("../models/user.model.js");
-const Bookmark = require("../models/bookmark.model.js");
-const Collection = require("../models/collection.model.js");
-const SearchCategory = require("../models/searchCategory.model.js");
-
+const User = require("../models/user.model");
+const Bookmark = require("../models/bookmark.model");
+const Collection = require("../models/collection.model");
+const SearchCategory = require("../models/searchCategory.model");
 
 module.exports = {
     indexUsers: async (req, res, next) => {

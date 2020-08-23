@@ -16,6 +16,10 @@ const UserSchema = new Schema({
         type: String,
         required: [true, "Password field for user is required"],
     },
+    allowCollectingData: {
+        type: Boolean,
+        default: false
+    },
     bookmarks: [{
         type: Schema.Types.ObjectId,
         ref: 'Bookmark'
