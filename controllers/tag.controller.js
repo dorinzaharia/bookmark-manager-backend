@@ -40,7 +40,7 @@ module.exports = {
             await tag.remove();
             user.tags.pull(tag);
             await user.save();
-            await Bookmark.update({tags: id}, { $unset: {tags: 1}}, { many: true });
+            await Bookmark.update({tags: id}, { $pull: { tags: id } }, { many: true });
             res.status(200).json(tag);
         } catch (error) {
             next(error);
