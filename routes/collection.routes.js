@@ -5,12 +5,12 @@ const router = require("express").Router();
 const collectionController = require("../controllers/collection.controller");
 
 router.route("/")
-    .get(collectionController.index)
+    .get(collectionController.list)
 
 router.route("/:id")
-    .get(collectionController.getCollection)
-    .put(collectionController.updateCollection)
-    .patch(collectionController.updateCollection)
-    .delete(collectionController.removeCollection)
+    .get(collectionController.get)
+    .put(collectionController.update)
+    .patch(collectionController.update)
+    .delete(collectionController.remove)
 
 module.exports = router;

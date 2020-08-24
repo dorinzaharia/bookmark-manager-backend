@@ -15,6 +15,7 @@ const userRoutes = require("./routes/user.routes");
 const bookmarkRoutes = require("./routes/bookmark.routes");
 const searchCategoryRoutes = require("./routes/searchCategory.routes");
 const collectionRoutes = require("./routes/collection.routes");
+const tagRoutes = require("./routes/tag.routes");
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use("/users", userRoutes);
 app.use("/bookmarks", bookmarkRoutes);
 app.use("/categories", searchCategoryRoutes);
 app.use("/collections", collectionRoutes);
+app.use("/tags", tagRoutes);
 
 // Database connection
 const uri = `mongodb+srv://${dbUsername}:${dbPassword}@${

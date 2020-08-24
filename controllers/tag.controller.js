@@ -1,13 +1,13 @@
 // Internal imports
 const User = require("../models/user.model");
-const Collection = require("../models/collection.model");
+const Tag = require("../models/tag.model");
 const Bookmark = require("../models/bookmark.model");
 
 module.exports = {
     list: async (req, res, next) => {
         try {
-            const collections = await Collection.find({});
-            res.status(200).json(collections);
+            const tags = await Tag.find({});
+            res.status(200).json(tags);
         } catch(error) {
             next(error);
         }  
@@ -15,8 +15,8 @@ module.exports = {
     get: async (req, res, next) => {
         try {
             const { id } = req.params;
-            const collection = await Collection.findById(id);
-            res.status(200).json(collection);
+            const tag = await Tag.findById(id);
+            res.status(200).json(tag);
         } catch (error) {
             next(error);
         }
@@ -24,9 +24,9 @@ module.exports = {
     update: async (req, res, next) => {
         try {
             const { id } = req.params;
-            const newCollection = req.body;
-            await Collection.findByIdAndUpdate(id, newCollection);
-            res.status(200).json(newCollection);
+            const newTag = req.body;
+            await Tag.findByIdAndUpdate(id, newTag);
+            res.status(200).json(newTag);
         } catch (error) {
             next(error);
         }
@@ -34,14 +34,14 @@ module.exports = {
     remove: async (req, res, next) => {
         try {
             const { id } = req.params;
-            const collection = await Collection.findById(id);
-            const userId = collection.user;
+            const tag = await Tag.findById(id);
+            const userId = tag.user;
             const user = await User.findById(userId);
-            await collection.remove();
-            user.collections.pull(collection);
+            await tag.remove();
+            user.tags.pull(tag);
             await user.save();
-            await Bookmark.update({collectionId: id}, { $unset: {collectionId: 1}}, { many: true });
-            res.status(200).json(collection);
+            await Bookmark.update({tags: id}, { $unset: {tags: 1}}, { many: true });
+            res.status(200).json(tag);
         } catch (error) {
             next(error);
         }
