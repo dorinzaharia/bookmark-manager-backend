@@ -1,9 +1,6 @@
 // Internal imports
 const User = require("../models/user.model");
 const Bookmark = require("../models/bookmark.model");
-const Collection = require("../models/collection.model");
-const SearchCategory = require("../models/searchCategory.model");
-const Tag = require("../models/tag.model");
 
 module.exports = {
     index: async (req, res, next) => {
@@ -17,18 +14,8 @@ module.exports = {
     getBookmark: async (req, res, next) => {
         try {
             const { id } = req.params;
-            const bookmarks = await Bookmark.findById(id);
-            res.status(200).json(bookmarks);
-        } catch (error) {
-            next(error);
-        }
-    },
-    replaceBookmark: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const newBookmark = req.body;
-            await Bookmark.findByIdAndUpdate(id, newBookmark);
-            res.status(200).json(newBookmark);
+            const bookmark = await Bookmark.findById(id);
+            res.status(200).json(bookmark);
         } catch (error) {
             next(error);
         }

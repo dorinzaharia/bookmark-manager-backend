@@ -9,7 +9,7 @@ router.route("/")
 
 router.route("/:id")
     .get(bookmarkController.getBookmark)
-    .put(bookmarkController.replaceBookmark)
+    .put(bookmarkController.updateBookmark)
     .patch(bookmarkController.updateBookmark)
     .delete(bookmarkController.removeBookmark)
 

@@ -3,10 +3,11 @@ const router = require("express").Router();
 
 // Internal imports
 const userController = require("../controllers/user.controller");
+const { validateBody, schemas } = require("../helpers/routes.helper");
 
 router.route("/")
     .get(userController.indexUsers)
-    .post(userController.createNewUser)
+    .post(validateBody(schemas.userSchema), userController.createNewUser)
 
 router.route("/:id")
     .get(userController.getByUserId)
@@ -21,7 +22,7 @@ router.route("/:id/collections")
     .get(userController.indexUserCollections)
     .post(userController.createNewUserCollection)
 
-router.route("/:id/searchCategories")
+router.route("/:id/categories")
     .get(userController.indexUserSearchCategories)
     .post(userController.createNewUserSearchCategory)
 
