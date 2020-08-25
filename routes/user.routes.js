@@ -3,11 +3,10 @@ const router = require("express").Router();
 
 // Internal imports
 const userController = require("../controllers/user.controller");
-const { validateBody, schemas } = require("../helpers/routes.helper");
 
 router.route("/")
     .get(userController.indexUsers)
-    .post(validateBody(schemas.userSchema), userController.createNewUser)
+    .post(userController.createNewUser)
 
 router.route("/:id")
     .get(userController.getByUserId)

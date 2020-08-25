@@ -1,5 +1,6 @@
 // External imports
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
@@ -10,7 +11,8 @@ const UserSchema = new Schema({
     email: {
         type: String,
         required: [true, "Email field for user is required"],
-        unique: [true, "Email field for user must be unique"]
+        unique: [true, "Email field for user must be unique"],
+        lowercase: true
     },
     password: {
         type: String,
@@ -37,6 +39,17 @@ const UserSchema = new Schema({
         ref: 'Tag'
     }]
 });
+
+UserSchema.pre('save', async (next) => {
+    try {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(this.password, salt);
+        this.password = hashedPassword;
+        next();
+    } catch (error) {
+        next(error);
+    }
+})
 
 module.exports = mongoose.model("User", UserSchema);
 
