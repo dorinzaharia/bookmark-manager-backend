@@ -1,12 +1,23 @@
 // External imports
 const router = require("express").Router();
+const passport = require('passport');
 
 // Internal imports
 const userController = require("../controllers/user.controller");
+const authUserController = require("../controllers/user.auth.controller");
+const passportConfig = require('../middleware/auth.validation.middleware');
+
+const passportSignIn = passport.authenticate('local', { session: false });
+const passportJWT = passport.authenticate('jwt', { session: false });
 
 router.route("/")
     .get(userController.indexUsers)
-    .post(userController.createNewUser)
+
+router.route("/signup")
+    .post(authUserController.signUp)
+
+router.route("/signin")
+    .post(authUserController.signIn)
 
 router.route("/:id")
     .get(userController.getByUserId)
