@@ -2,10 +2,10 @@
 const Joi = require("joi");
 
 module.exports = {
-    tagSchema: Joi.object().keys({
-        name: Joi.string().min(3).max(30).required(),
+    strictSchema: Joi.object().keys({
+        title: Joi.string().min(3).max(30).required(),
     }),
-    tagOptionalSchema: Joi.object().keys({
-        name: Joi.string().min(3).max(30),
-    })
-}
+    variableSchema: Joi.object().keys({
+        title: Joi.string().min(3).max(30),
+    }),
+};

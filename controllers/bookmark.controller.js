@@ -3,45 +3,35 @@ const User = require("../models/user.model");
 const Bookmark = require("../models/bookmark.model");
 
 module.exports = {
-    index: async (req, res, next) => {
-        try {
-            const bookmarks = await Bookmark.find({});
-            res.status(200).json(bookmarks);
-        } catch(error) {
-            next(error);
-        }  
+    index: async (req, res) => {
+        const bookmarks = await Bookmark.find({});
+        res.status(200).json(bookmarks);
     },
-    getBookmark: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const bookmark = await Bookmark.findById(id);
-            res.status(200).json(bookmark);
-        } catch (error) {
-            next(error);
-        }
+    getById: async (req, res) => {
+        const { bookmarkId } = req.params;
+        const bookmark = await Bookmark.findById(bookmarkId);
+        res.status(200).json(bookmark);
     },
-    updateBookmark: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const newBookmark = req.body;
-            await Bookmark.findByIdAndUpdate(id, newBookmark);
-            res.status(200).json(newBookmark);
-        } catch (error) {
-            next(error);
-        }
+    updateById: async (req, res) => {
+        const { bookmarkId } = req.params;
+        const newBookmark = req.body;
+        await Bookmark.findByIdAndUpdate(bookmarkId, newBookmark);
+        res.status(200).json({
+            status: true,
+            message: "success",
+        });
     },
-    removeBookmark: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const bookmark = await Bookmark.findById(id);
-            const userId = bookmark.user;
-            const user = await User.findById(userId);
-            await bookmark.remove();
-            user.bookmarks.pull(bookmark);
-            await user.save();
-            res.status(200).json(bookmark);
-        } catch (error) {
-            next(error);
-        }
-    }
-}
+    deleteById: async (req, res) => {
+        const { bookmarkId } = req.params;
+        const bookmark = await Bookmark.findById(bookmarkId);
+        const userId = bookmark.userId;
+        const user = await User.findById(userId);
+        await bookmark.remove();
+        user.bookmarks.pull(bookmark);
+        await user.save();
+        res.status(200).json({
+            status: true,
+            message: "success",
+        });
+    },
+};

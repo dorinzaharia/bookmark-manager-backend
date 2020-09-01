@@ -5,119 +5,82 @@ const Collection = require("../models/collection.model");
 const Tag = require("../models/tag.model");
 
 module.exports = {
-    indexUsers: async (req, res, next) => {
-        try {
-            const users = await User.find({});
-            res.status(200).json(users);
-        } catch(error) {
-            next(error);
-        }  
+    index: async (req, res) => {
+        const users = await User.find({});
+        res.status(200).json(users);
     },
-    createNewUser: async (req, res, next) => {
-        try {
-            const newUser = new User(req.body);
-            const user = await newUser.save();
-            res.status(201).json(user);
-        } catch(error) {
-            next(error);
+    create: async (req, res) => {
+        const { email } = req.body;
+        const user = User.findOne({
+            email,
+        });
+        if (user) {
+            res.status(409).json({
+                status: false,
+                message: "User with email " + email + " already exists.",
+            });
         }
+        const newUser = new User(req.body);
+        await newUser.save();
+        res.status(201).json(newUser);
     },
-    getByUserId: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const user = await User.findById(id);
-            res.status(200).json(user);
-        } catch (error) {
-            next(error);
-        }
+    getById: async (req, res) => {
+        const { userId } = req.params;
+        const user = await User.findById(userId);
+        res.status(200).json(user);
     },
-    replaceUserById: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const newUser = req.body;
-            const user = await User.findByIdAndUpdate(id, newUser);
-            res.status(200).json(user);
-        } catch (error) {
-            next(error);
-        }
+    updateById: async (req, res) => {
+        const { userId } = req.params;
+        const newUser = req.body;
+        await User.findByIdAndUpdate(userId, newUser);
+        res.status(200).json({
+            status: true,
+            message: "success",
+        });
     },
-    updateUserById: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const newUser = req.body;
-            const user = await User.findByIdAndUpdate(id, newUser);
-            res.status(200).json(user);
-        } catch (error) {
-            next(error);
-        }
+    indexBookmarks: async (req, res) => {
+        const { userId } = req.params;
+        const user = await User.findById(userId).populate("bookmarks");
+        res.status(200).json(user.bookmarks);
     },
-    indexUserBookmarks: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const user = await User.findById(id).populate('bookmarks');
-            res.status(200).json(user.bookmarks);
-        } catch (error) {
-            next(error);
-        }
+    createBookmark: async (req, res) => {
+        const { userId } = req.params;
+        const user = await User.findById(userId);
+        const newBookmark = new Bookmark(req.body);
+        newBookmark.userId = user;
+        await newBookmark.save();
+        user.bookmarks.push(newBookmark);
+        await user.save();
+        res.status(201).json(newBookmark);
     },
-    createNewUserBookmark: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const newBookmark = new Bookmark(req.body);
-            const user = await User.findById(id);
-            newBookmark.user = user;
-            await newBookmark.save();
-            user.bookmarks.push(newBookmark)
-            await user.save();
-            res.status(201).json(newBookmark);
-        } catch(error) {
-            next(error);
-        }
+    indexCollections: async (req, res) => {
+        const { userId } = req.params;
+        const user = await User.findById(userId).populate("collections");
+        res.status(200).json(user.collections);
     },
-    indexUserCollections: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const user = await User.findById(id).populate('collections');;
-            res.status(200).json(user.collections);
-        } catch (error) {
-            next(error);
-        }
+    createCollection: async (req, res) => {
+        const { userId } = req.params;
+        const user = await User.findById(userId);
+        const newCollection = new Collection(req.body);
+        newCollection.userId = user;
+        await newCollection.save();
+        user.collections.push(newCollection);
+        await user.save();
+        res.status(201).json(newCollection);
     },
-    createNewUserCollection: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const newCollection = new Collection(req.body);
-            const user = await User.findById(id);
-            newCollection.user = user;
-            await newCollection.save();
-            user.collections.push(newCollection)
-            await user.save();
-            res.status(201).json(newCollection);
-        } catch(error) {
-            next(error);
-        }
+    indexTags: async (req, res) => {
+        const { userId } = req.params;
+        const user = await User.findById(userId).populate("tags");
+        res.status(200).json(user.tags);
     },
-    indexUserTags: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const user = await User.findById(id).populate('tags');;
-            res.status(200).json(user.tags);
-        } catch (error) {
-            next(error);
-        }
+    createTag: async (req, res) => {
+        const { userId } = req.params;
+        const user = await User.findById(userId);
+        const newTag = new Tag(req.body);
+        newTag.user = user;
+        await newTag.save();
+        user.tags.push(newTag);
+        await user.save();
+        res.status(201).json(newTag);
     },
-    createNewUserTag: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const newTag = new Tag(req.body);
-            const user = await User.findById(id);
-            newTag.user = user;
-            await newTag.save();
-            user.tags.push(newTag)
-            await user.save();
-            res.status(201).json(newTag);
-        } catch(error) {
-            next(error);
-        }
-    }
-}
+};

@@ -1,16 +1,20 @@
 // External imports
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+
 const Schema = mongoose.Schema;
 
-const TagSchema = new Schema({
-    name: {
-        type: String,
-        required: [true, "Name field for tag is required"]
+const TagSchema = new Schema(
+    {
+        title: {
+            type: String,
+            required: [true, "Title field for tag is required"],
+        },
+        userId: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
     },
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    },
-});
+    { versionKey: false }
+);
 
 module.exports = mongoose.model("Tag", TagSchema);

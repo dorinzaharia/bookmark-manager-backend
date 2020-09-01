@@ -13,7 +13,7 @@ const {
 } = require("../config/search.config");
 
 module.exports = {
-    webSearch: (req, res, next) => {
+    web: (req, res) => {
         const requestUrl = url.parse(
             url.format({
                 protocol: "https",
@@ -27,7 +27,7 @@ module.exports = {
                 },
             })
         );
-        const searchKeyWords = req.body.keysArray;
+        const { tags } = req.body;
         https.get(
             {
                 hostname: requestUrl.hostname,
@@ -42,28 +42,28 @@ module.exports = {
                     })
                     .on("end", () => {
                         const data = JSON.parse(body).webPages.value;
-                        data.map((item) => {
-                            item.contains = 0;
-                            searchKeyWords.map((str) => {
-                                item.snippet
-                                    .toLowerCase()
-                                    .includes(str.toLowerCase())
-                                    ? item.contains++
-                                    : item.contains;
+                        if (data && tags) {
+                            data.map((item) => {
+                                item.match = 0;
+                                tags.map((str) => {
+                                    item.snippet
+                                        .toLowerCase()
+                                        .includes(str.toLowerCase())
+                                        ? item.match++
+                                        : item.match;
+                                });
                             });
-                        });
-                        const result = data.sort(
-                            (a, b) => b.contains - a.contains
-                        );
-                        res.status(200).json(result);
-                    })
-                    .on("error", (error) => {
-                        next(error);
+                            const result = data.sort(
+                                (a, b) => b.match - a.match
+                            );
+                            return res.status(200).json(result);
+                        }
+                        return res.status(200).json(data);
                     });
             }
         );
     },
-    customSearch: (req, res, next) => {
+    custom: (req, res) => {
         const requestUrl = url.parse(
             url.format({
                 protocol: "https",
@@ -79,7 +79,7 @@ module.exports = {
                 },
             })
         );
-        const searchKeyWords = req.body.keysArray;
+        const { tags } = req.body;
         https.get(
             {
                 hostname: requestUrl.hostname,
@@ -95,23 +95,23 @@ module.exports = {
                     })
                     .on("end", () => {
                         const data = JSON.parse(body).webPages.value;
-                        data.map((item) => {
-                            item.contains = 0;
-                            searchKeyWords.map((str) => {
-                                item.snippet
-                                    .toLowerCase()
-                                    .includes(str.toLowerCase())
-                                    ? item.contains++
-                                    : item.contains;
+                        if (data && tags) {
+                            data.map((item) => {
+                                item.match = 0;
+                                tags.map((str) => {
+                                    item.snippet
+                                        .toLowerCase()
+                                        .includes(str.toLowerCase())
+                                        ? item.match++
+                                        : item.match;
+                                });
                             });
-                        });
-                        const result = data.sort(
-                            (a, b) => b.contains - a.contains
-                        );
-                        res.status(200).json(result);
-                    })
-                    .on("error", (error) => {
-                        res.status(500).json({ error });
+                            const result = data.sort(
+                                (a, b) => b.match - a.match
+                            );
+                            return res.status(200).json(result);
+                        }
+                        return res.status(200).json(data);
                     });
             }
         );

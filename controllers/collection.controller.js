@@ -2,48 +2,62 @@
 const User = require("../models/user.model");
 const Collection = require("../models/collection.model");
 const Bookmark = require("../models/bookmark.model");
+const { mapReduce } = require("../models/user.model");
 
 module.exports = {
-    list: async (req, res, next) => {
-        try {
-            const collections = await Collection.find({});
-            res.status(200).json(collections);
-        } catch(error) {
-            next(error);
-        }  
+    index: async (req, res) => {
+        const collections = await Collection.find({});
+        res.status(200).json(collections);
     },
-    get: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const collection = await Collection.findById(id);
-            res.status(200).json(collection);
-        } catch (error) {
-            next(error);
-        }
+    getById: async (req, res) => {
+        const { collectionId } = req.params;
+        const collection = await Collection.findById(collectionId);
+        res.status(200).json(collection);
     },
-    update: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const newCollection = req.body;
-            await Collection.findByIdAndUpdate(id, newCollection);
-            res.status(200).json(newCollection);
-        } catch (error) {
-            next(error);
-        }
+    updateById: async (req, res) => {
+        const { collectionId } = req.params;
+        const newCollection = req.body;
+        await Collection.findByIdAndUpdate(collectionId, newCollection);
+        res.status(200).json({
+            status: true,
+            message: "success",
+        });
     },
-    remove: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const collection = await Collection.findById(id);
-            const userId = collection.user;
-            const user = await User.findById(userId);
-            await collection.remove();
-            user.collections.pull(collection);
-            await user.save();
-            await Bookmark.update({collectionId: id}, { $unset: {collectionId: 1}}, { many: true });
-            res.status(200).json(collection);
-        } catch (error) {
-            next(error);
-        }
-    }
-}
+    deleteById: async (req, res) => {
+        const { collectionId } = req.params;
+        const collection = await Collection.findById(collectionId);
+        const userId = collection.userId;
+        const user = await User.findById(userId);
+        await collection.remove();
+        user.collections.pull(collection);
+        await user.save();
+        await Bookmark.update(
+            { collectionId: id },
+            { $unset: { collectionId: 1 } },
+            { many: true }
+        );
+        res.status(200).json({
+            status: true,
+            message: "success",
+        });
+    },
+    deleteByIdWithBookmarks: async (req, res) => {
+        const { collectionId } = req.params;
+        const collection = await Collection.findById(collectionId);
+        const bookmarks = await Bookmark.find({ collectionId });
+        const userId = collection.userId;
+        const user = await User.findById(userId);
+        bookmarks.map(async bookmark => {
+            await bookmark.remove();
+            user.bookmarks.pull(bookmark);
+        })
+        await collection.remove();
+        user.collections.pull(collection);
+        await user.save();
+
+        res.status(200).json({
+            status: true,
+            message: "success",
+        });
+    },
+};
