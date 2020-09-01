@@ -2,7 +2,6 @@
 const User = require("../models/user.model");
 const Bookmark = require("../models/bookmark.model");
 const Collection = require("../models/collection.model");
-const SearchCategory = require("../models/searchCategory.model");
 const Tag = require("../models/tag.model");
 
 module.exports = {
@@ -94,29 +93,6 @@ module.exports = {
             user.collections.push(newCollection)
             await user.save();
             res.status(201).json(newCollection);
-        } catch(error) {
-            next(error);
-        }
-    },
-    indexUserSearchCategories: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const user = await User.findById(id).populate('searchCategories');;
-            res.status(200).json(user.searchCategories);
-        } catch (error) {
-            next(error);
-        }
-    },
-    createNewUserSearchCategory: async (req, res, next) => {
-        try {
-            const { id } = req.params;
-            const newSearchCategory = new SearchCategory(req.body);
-            const user = await User.findById(id);
-            newSearchCategory.user = user;
-            await newSearchCategory.save();
-            user.searchCategories.push(newSearchCategory)
-            await user.save();
-            res.status(201).json(newSearchCategory);
         } catch(error) {
             next(error);
         }

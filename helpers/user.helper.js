@@ -14,7 +14,6 @@ module.exports = {
         allowCollectingData: Joi.boolean(),
         bookmarks: Joi.array().items(Joi.ObjectId()),
         collections: Joi.array().items(Joi.ObjectId()),
-        searchCategories: Joi.array().items(Joi.ObjectId()),
         tags: Joi.array().items(Joi.ObjectId())
     })
 }

@@ -5,8 +5,9 @@ const passport = require('passport');
 // Internal imports
 const userController = require("../controllers/user.controller");
 const authUserController = require("../controllers/user.auth.controller");
-const passportConfig = require('../middleware/auth.validation.middleware');
 
+// Passport
+const passportConfig = require('../middleware/auth.validation.middleware');
 const passportSignIn = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
 
@@ -31,10 +32,6 @@ router.route("/:id/bookmarks")
 router.route("/:id/collections")
     .get(userController.indexUserCollections)
     .post(userController.createNewUserCollection)
-
-router.route("/:id/categories")
-    .get(userController.indexUserSearchCategories)
-    .post(userController.createNewUserSearchCategory)
 
 router.route("/:id/tags")
     .get(userController.indexUserTags)
