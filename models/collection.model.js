@@ -9,7 +9,7 @@ const CollectionSchema = new Schema(
             type: String,
             required: [true, "Title field for collection is required"],
         },
-        emoji: {
+        icon: {
             type: String,
         },
         userId: {

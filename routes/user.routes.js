@@ -6,6 +6,8 @@ const passport = require("passport");
 const userController = require("../controllers/user.controller");
 const authUserController = require("../controllers/user.auth.controller");
 
+const permissionController = require("../middleware/auth.permission.middleware");
+
 // Passport
 const passportConfig = require("../middleware/auth.validation.middleware");
 const passportSignIn = passport.authenticate("local", { session: false });
