@@ -12,9 +12,8 @@ module.exports = {
     create: async (req, res) => {
         const { email } = req.body;
         const user = await User.findOne({ email });
-        console.log(user);
         if (user) {
-            res.status(409).json({
+            return res.status(409).json({
                 status: false,
                 message: "User with email " + email + " already exists.",
             });

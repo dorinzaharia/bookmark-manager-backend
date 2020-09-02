@@ -5,6 +5,7 @@ const passport = require("passport");
 // Internal imports
 const userController = require("../controllers/user.controller");
 const authUserController = require("../controllers/user.auth.controller");
+const fileController = require("../controllers/file.controller");
 
 const permissionController = require("../middleware/auth.permission.middleware");
 
@@ -24,6 +25,10 @@ router
     .get(userController.getById)
     .put(userController.updateById)
     .patch(userController.updateById);
+
+router
+    .route("/:userId/import")
+    .post(fileController.import)
 
 router
     .route("/:userId/bookmarks")

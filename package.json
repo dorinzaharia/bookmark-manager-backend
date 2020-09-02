@@ -11,9 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.0",
+    "cheerio": "^1.0.0-rc.3",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-fileupload": "^1.2.0",
     "express-promise-router": "^4.0.1",
     "https": "^1.0.0",
     "joi": "^17.2.1",

@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const logger = require("morgan");
+const fileUpload = require("express-fileupload");
 
 // Internal imports
 // Internal imports | Constants
@@ -26,6 +27,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(logger("dev"));
+app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
