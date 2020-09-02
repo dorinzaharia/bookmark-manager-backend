@@ -31,6 +31,10 @@ router
     .post(fileController.import)
 
 router
+    .route("/:userId/export")
+    .post(fileController.export)
+
+router
     .route("/:userId/bookmarks")
     .get(userController.indexBookmarks)
     .post(userController.createBookmark);

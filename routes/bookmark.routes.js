@@ -11,6 +11,10 @@ router
     .get(bookmarkController.getById)
     .put(bookmarkController.updateById)
     .patch(bookmarkController.updateById)
-    .delete(bookmarkController.deleteById);
+    .delete(bookmarkController.deleteById)
+
+router.route("/:bookmarkId/tags")
+    .patch(bookmarkController.addTagById)
+    .delete(bookmarkController.deleteTagById)
 
 module.exports = router;

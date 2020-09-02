@@ -1,5 +1,6 @@
 // External imports
 const cheerio = require("cheerio");
+const netscape = require("netscape-bookmarks");
 
 // Internal imports
 const User = require("../models/user.model");
@@ -18,19 +19,18 @@ module.exports = {
 
         const $ = cheerio.load(req.files.bookmarks.data);
         const user = await User.findById(userId);
-        await $("a").each(async function(index, a) {
+        await $("a").each(async function (index, a) {
             let $a = $(a);
             let title = $a.text();
             let url = $a.attr("href");
             let bookmark = new Bookmark({
                 userId,
                 title: title || " ",
-                url
-            })
+                url,
+            });
             bookmark.userId = user;
             user.bookmarks.push(bookmark);
             await bookmark.save();
-
         });
         await user.save();
 
@@ -38,5 +38,18 @@ module.exports = {
             status: true,
             message: "Bookmarks imported",
         });
+    },
+    export: async (req, res) => {
+        const { userId } = req.params;
+        const bookmarksArray = await Bookmark.find({ userId })
+        const bookmarks = {};
+        bookmarksArray.map(bookmark => { return bookmarks[bookmark.title] = bookmark.url});
+        var html = netscape(bookmarks);
+        const date = new Date();
+        const dd = date.getDate();
+        const mm = date.getMonth() + 1; 
+        const yyyy = date.getFullYear();
+        res.attachment("bookmarks" + dd + "_" + mm + "_" + yyyy + ".html");
+        res.send(Buffer.from(html));
     },
 };

@@ -34,4 +34,27 @@ module.exports = {
             message: "success",
         });
     },
+    addTagById: async (req, res) => {
+        const { bookmarkId } = req.params;
+        const bookmark = await Bookmark.findById(bookmarkId);
+        const { tagId } = req.query;
+        bookmark.tags.push(tagId)
+        bookmark.save();
+        res.status(200).json({
+            status: true,
+            message: "success",
+        });
+    },
+    deleteTagById: async (req, res) => {
+        const { bookmarkId } = req.params;
+        const bookmark = await Bookmark.findById(bookmarkId);
+        const { tagId } = req.query;
+        bookmark.tags.pull(tagId)
+        bookmark.save();
+        res.status(200).json({
+            status: true,
+            message: "success",
+        });
+    },
+
 };
